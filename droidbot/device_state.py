@@ -400,6 +400,7 @@ class DeviceState(object):
         possible_events = []
         enabled_view_ids = []
         touch_exclude_view_ids = set()
+        clickable_elemnts_children = set()
         for view_dict in self.views:
             # exclude navigation bar if exists
             if self.__safe_dict_get(view_dict, 'enabled') and \
@@ -413,7 +414,8 @@ class DeviceState(object):
             if self.__safe_dict_get(self.views[view_id], 'clickable'):
                 possible_events.append(TouchEvent(view=self.views[view_id]))
                 touch_exclude_view_ids.add(view_id)
-                touch_exclude_view_ids.union(self.get_all_children(self.views[view_id]))
+                clickable_elemnts_children = self.get_all_children(self.views[view_id])
+                # touch_exclude_view_ids.union(self.get_all_children(self.views[view_id]))
 
         for view_id in enabled_view_ids:
             if self.__safe_dict_get(self.views[view_id], 'scrollable'):
@@ -422,33 +424,39 @@ class DeviceState(object):
                 possible_events.append(ScrollEvent(view=self.views[view_id], direction="LEFT"))
                 possible_events.append(ScrollEvent(view=self.views[view_id], direction="RIGHT"))
 
-        for view_id in enabled_view_ids:
-            if self.__safe_dict_get(self.views[view_id], 'checkable'):
-                possible_events.append(TouchEvent(view=self.views[view_id]))
-                touch_exclude_view_ids.add(view_id)
-                touch_exclude_view_ids.union(self.get_all_children(self.views[view_id]))
-
+        # for view_id in enabled_view_ids:
+        #     if self.__safe_dict_get(self.views[view_id], 'checkable'):
+        #         possible_events.append(TouchEvent(view=self.views[view_id]))
+        #         touch_exclude_view_ids.add(view_id)
+        #         touch_exclude_view_ids.union(self.get_all_children(self.views[view_id]))
+        #
         for view_id in enabled_view_ids:
             if self.__safe_dict_get(self.views[view_id], 'long_clickable'):
                 possible_events.append(LongTouchEvent(view=self.views[view_id]))
+        #
+        # for view_id in enabled_view_ids:
+        #     if self.__safe_dict_get(self.views[view_id], 'editable'):
+        #         possible_events.append(SetTextEvent(view=self.views[view_id], text="HelloWorld"))
+        #         touch_exclude_view_ids.add(view_id)
+        #         # TODO figure out what event can be sent to editable views
+        #         pass
 
-        for view_id in enabled_view_ids:
-            if self.__safe_dict_get(self.views[view_id], 'editable'):
-                possible_events.append(SetTextEvent(view=self.views[view_id], text="HelloWorld"))
-                touch_exclude_view_ids.add(view_id)
-                # TODO figure out what event can be sent to editable views
-                pass
-
-        for view_id in enabled_view_ids:
-            if view_id in touch_exclude_view_ids:
-                continue
+        for view_id in clickable_elemnts_children:
             children = self.__safe_dict_get(self.views[view_id], 'children')
             if children and len(children) > 0:
                 continue
             possible_events.append(TouchEvent(view=self.views[view_id]))
 
-        # For old Android navigation bars
-        possible_events.append(KeyEvent(name="MENU"))
+        # for view_id in enabled_view_ids:
+        #     if view_id in touch_exclude_view_ids:
+        #         continue
+        #     children = self.__safe_dict_get(self.views[view_id], 'children')
+        #     if children and len(children) > 0:
+        #         continue
+        #     possible_events.append(TouchEvent(view=self.views[view_id]))
+
+        # # For old Android navigation bars
+        # possible_events.append(KeyEvent(name="MENU"))
 
         self.possible_events = possible_events
         return [] + possible_events
