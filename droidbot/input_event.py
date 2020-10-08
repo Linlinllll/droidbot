@@ -230,7 +230,6 @@ class EventLog(object):
         self.start_profiling()
         self.event_str = self.event.get_event_str(self.from_state)
         print("Input: %s" % self.event_str)
-        self.device.logger.info("Input: %s" % self.event_str)
         self.device.send_event(self.event)
 
     def start_profiling(self):
