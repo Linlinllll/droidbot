@@ -425,7 +425,7 @@ class DeviceState(object):
             try:
                 view_long = int(size.split('*')[0])
                 view_width = int(size.split('*')[1])
-                if view_long != 0 and view_width != 0:
+                if 0 < view_width < 500 and 0 < view_long < 500:
                     if 1/3 < view_long/view_width < 3:
                         ok_size = True
             except:
