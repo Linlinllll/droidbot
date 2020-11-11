@@ -437,7 +437,8 @@ class DeviceState(object):
             if ok_size and ok_no_text:
                 preferred_views.add(view_id)
 
-            view_text = self.__safe_dict_get(self.views[view_id], 'text') if view['text'] is not None else ''
+            view_text = self.__safe_dict_get(self.views[view_id], 'text') if \
+                self.__safe_dict_get(self.views[view_id], 'text') is not None else ''
             view_text = view_text.lower().strip()
 
             if view_text in go_buttons_text:
