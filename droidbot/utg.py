@@ -3,6 +3,8 @@ import json
 import os
 import random
 import datetime
+import re
+
 import networkx as nx
 
 from .utils import list_to_html_table
@@ -194,7 +196,19 @@ class UTG(object):
 
     def is_event_explored(self, event, state):
         event_str = event.get_event_str(state)
-        return event_str in self.effective_event_strs or event_str in self.ineffective_event_strs
+        matcher_1 = re.match(r'TouchEvent[(]state=.*?, view=(.*?)[)]', event_str, re.M | re.I)
+        view_str = matcher_1[1]
+
+        exploered_view_strs = set()
+        for event_string in self.effective_event_strs:
+            matcher = re.match(r'TouchEvent[(]state=.*?, view=(.*?)[)]', event_string, re.M | re.I)
+            view_string = matcher[1]
+            exploered_view_strs.add(view_string)
+        for event_string in self.ineffective_event_strs:
+            matcher = re.match(r'TouchEvent[(]state=.*?, view=(.*?)[)]', event_string, re.M | re.I)
+            view_string = matcher[1]
+            exploered_view_strs.add(view_string)
+        return view_str in exploered_view_strs
 
     def is_state_explored(self, state):
         if state.state_str in self.explored_state_strs:
