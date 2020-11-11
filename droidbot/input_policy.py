@@ -394,18 +394,18 @@ class UtgGreedySearchPolicy(UtgBasedInputPolicy):
                 self.__num_restarts = 0
 
             # pass (START) through
-            if not self.__event_trace.endswith(EVENT_FLAG_START_APP):
-                if self.__num_restarts > MAX_NUM_RESTARTS:
-                    # If the app had been restarted too many times, enter random mode
-                    # msg = "The app had been restarted too many times. Entering random mode."
-                    # self.logger.info(msg)
-                    # self.__random_explore = True
-                    raise InputInterruptedException("The app cannot be started.")
-                else:
-                    # Start the app
-                    self.__event_trace += EVENT_FLAG_START_APP
-                    self.logger.info("Trying to start the app...")
-                    return IntentEvent(intent=start_app_intent)
+            # if not self.__event_trace.endswith(EVENT_FLAG_START_APP):
+            if self.__num_restarts > MAX_NUM_RESTARTS:
+                # If the app had been restarted too many times, enter random mode
+                # msg = "The app had been restarted too many times. Entering random mode."
+                # self.logger.info(msg)
+                # self.__random_explore = True
+                raise InputInterruptedException("The app cannot be started.")
+            else:
+                # Start the app
+                self.__event_trace += EVENT_FLAG_START_APP
+                self.logger.info("Trying to start the app...")
+                return IntentEvent(intent=start_app_intent)
 
         elif current_state.get_app_activity_depth(self.app) > 0:
             # If the app is in activity stack but is not in foreground
