@@ -411,18 +411,19 @@ class DeviceState(object):
         enabled_view_ids.reverse()
 
         for view_id in enabled_view_ids:
-            if self.__safe_dict_get(self.views[view_id], 'clickable'):
+            if self.__safe_dict_get(self.views[view_id], 'clickable') or self.__safe_dict_get(self.views[view_id], 'long_clickable')\
+                    or self.__safe_dict_get(self.views[view_id], 'checkable'):
                 possible_events.append(TouchEvent(view=self.views[view_id]))
-                touch_exclude_view_ids.add(view_id)
+                # touch_exclude_view_ids.add(view_id)
                 clickable_elemnts_children = self.get_all_children(self.views[view_id])
                 # touch_exclude_view_ids.union(self.get_all_children(self.views[view_id]))
 
-        for view_id in enabled_view_ids:
-            if self.__safe_dict_get(self.views[view_id], 'scrollable'):
-                possible_events.append(ScrollEvent(view=self.views[view_id], direction="UP"))
-                possible_events.append(ScrollEvent(view=self.views[view_id], direction="DOWN"))
-                possible_events.append(ScrollEvent(view=self.views[view_id], direction="LEFT"))
-                possible_events.append(ScrollEvent(view=self.views[view_id], direction="RIGHT"))
+        # for view_id in enabled_view_ids:
+        #     if self.__safe_dict_get(self.views[view_id], 'scrollable'):
+        #         possible_events.append(ScrollEvent(view=self.views[view_id], direction="UP"))
+        #         possible_events.append(ScrollEvent(view=self.views[view_id], direction="DOWN"))
+        #         possible_events.append(ScrollEvent(view=self.views[view_id], direction="LEFT"))
+        #         possible_events.append(ScrollEvent(view=self.views[view_id], direction="RIGHT"))
 
         # for view_id in enabled_view_ids:
         #     if self.__safe_dict_get(self.views[view_id], 'checkable'):
@@ -430,9 +431,9 @@ class DeviceState(object):
         #         touch_exclude_view_ids.add(view_id)
         #         touch_exclude_view_ids.union(self.get_all_children(self.views[view_id]))
         #
-        for view_id in enabled_view_ids:
-            if self.__safe_dict_get(self.views[view_id], 'long_clickable'):
-                possible_events.append(LongTouchEvent(view=self.views[view_id]))
+        # for view_id in enabled_view_ids:
+        #     if self.__safe_dict_get(self.views[view_id], 'long_clickable'):
+        #         possible_events.append(LongTouchEvent(view=self.views[view_id]))
         #
         # for view_id in enabled_view_ids:
         #     if self.__safe_dict_get(self.views[view_id], 'editable'):
@@ -441,11 +442,11 @@ class DeviceState(object):
         #         # TODO figure out what event can be sent to editable views
         #         pass
 
-        for view_id in clickable_elemnts_children:
-            children = self.__safe_dict_get(self.views[view_id], 'children')
-            if children and len(children) > 0:
-                continue
-            possible_events.append(TouchEvent(view=self.views[view_id]))
+        # for view_id in clickable_elemnts_children:
+        #     children = self.__safe_dict_get(self.views[view_id], 'children')
+        #     if children and len(children) > 0:
+        #         continue
+        #     possible_events.append(TouchEvent(view=self.views[view_id]))
 
         # for view_id in enabled_view_ids:
         #     if view_id in touch_exclude_view_ids:
