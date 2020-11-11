@@ -416,7 +416,7 @@ class DeviceState(object):
                     or self.__safe_dict_get(self.views[view_id], 'checkable'):
                 possible_views.add(view_id)
 
-        go_buttons_text = ["yes", "ok", "activate", "detail", "more", "access",
+        go_buttons_text = ["skip", "yes", "ok", "activate", "detail", "more", "access",
                              "allow", "check", "agree", "try", "go", "next"]
 
         for view_id in possible_views:
@@ -437,7 +437,10 @@ class DeviceState(object):
             if ok_size and ok_no_text:
                 preferred_views.add(view_id)
 
-            if self.__safe_dict_get(self.views[view_id], 'text') in go_buttons_text:
+            view_text = self.__safe_dict_get(self.views[view_id], 'text') if view['text'] is not None else ''
+            view_text = view_text.lower().strip()
+
+            if view_text in go_buttons_text:
                 go_buttons.add(view_id)
 
         for view_id in preferred_views:
