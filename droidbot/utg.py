@@ -196,6 +196,7 @@ class UTG(object):
 
     def is_event_explored(self, event, state):
         event_str = event.get_event_str(state)
+        print(event_str)
         matcher_1 = re.match(r'TouchEvent[(]state=.*?, view=(.*?)[)]', event_str, re.M | re.I)
         view_str = matcher_1[1]
 
