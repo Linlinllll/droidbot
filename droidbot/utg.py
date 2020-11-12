@@ -196,19 +196,26 @@ class UTG(object):
 
     def is_event_explored(self, event, state):
         event_str = event.get_event_str(state)
-        print(event_str)
+        matcher_key_back = re.match(r'TouchEvent[(]state=.*?, name=BACK[)]', event_str, re.M | re.I)
+        if matcher_key_back is not None:
+            return event_str in self.effective_event_strs or event_str in self.ineffective_event_strs
+
+        view_str = ''
         matcher_1 = re.match(r'TouchEvent[(]state=.*?, view=(.*?)[)]', event_str, re.M | re.I)
-        view_str = matcher_1[1]
+        if matcher_1 is not None:
+            view_str = matcher_1[1]
 
         exploered_view_strs = set()
         for event_string in self.effective_event_strs:
             matcher = re.match(r'TouchEvent[(]state=.*?, view=(.*?)[)]', event_string, re.M | re.I)
-            view_string = matcher[1]
-            exploered_view_strs.add(view_string)
+            if matcher is not None:
+                view_string = matcher[1]
+                exploered_view_strs.add(view_string)
         for event_string in self.ineffective_event_strs:
             matcher = re.match(r'TouchEvent[(]state=.*?, view=(.*?)[)]', event_string, re.M | re.I)
-            view_string = matcher[1]
-            exploered_view_strs.add(view_string)
+            if matcher is not None:
+                view_string = matcher[1]
+                exploered_view_strs.add(view_string)
         return view_str in exploered_view_strs
 
     def is_state_explored(self, state):
