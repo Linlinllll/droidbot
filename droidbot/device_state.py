@@ -402,6 +402,8 @@ class DeviceState(object):
         preferred_views = set()
         go_buttons = set()
         possible_views = set()
+        touch_exclude_view_ids = set()
+        clickable_elemnts_children = set()
         for view_dict in self.views:
             # exclude navigation bar if exists
             if self.__safe_dict_get(view_dict, 'enabled') and \
@@ -415,6 +417,23 @@ class DeviceState(object):
             if self.__safe_dict_get(self.views[view_id], 'clickable') or self.__safe_dict_get(self.views[view_id], 'long_clickable')\
                     or self.__safe_dict_get(self.views[view_id], 'checkable'):
                 possible_views.add(view_id)
+                touch_exclude_view_ids.add(view_id)
+                clickable_elemnts_children = self.get_all_children(self.views[view_id])
+                touch_exclude_view_ids.union(self.get_all_children(self.views[view_id]))
+
+        for view_id in clickable_elemnts_children:
+            children = self.__safe_dict_get(self.views[view_id], 'children')
+            if children and len(children) > 0:
+                continue
+            possible_views.add(view_id)
+
+        for view_id in enabled_view_ids:
+            if view_id in touch_exclude_view_ids:
+                continue
+            children = self.__safe_dict_get(self.views[view_id], 'children')
+            if children and len(children) > 0:
+                continue
+            possible_views.add(view_id)
 
         go_buttons_text = ["skip", "yes", "ok", "activate", "detail", "more", "access",
                              "allow", "check", "agree", "try", "go", "next"]
